@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Faculty | Cyber Security Department</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%230a2a5e'/><path d='M16 6l8 4v8c0 5-8 9-8 9s-8-4-8-9v-8z' fill='%2300bcd4'/></svg>" />
+  <style>
+    /* Extra faculty page styles */
+    .faculty-detail-card {
+      background: var(--white);
+      border: 1px solid var(--light-gray);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      transition: all var(--transition);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .faculty-detail-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 24px 64px var(--shadow-deep);
+      border-color: rgba(21,101,192,0.25);
+    }
+
+    .faculty-detail-photo {
+      height: 220px;
+      background: linear-gradient(155deg, #dce8f8, #e0f7fa, #e8edf5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .faculty-detail-photo .initials-avatar {
+      width: 96px;
+      height: 96px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), var(--accent-light));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-heading);
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--white);
+      letter-spacing: 0.05em;
+      border: 4px solid rgba(255,255,255,0.8);
+      box-shadow: 0 8px 24px rgba(10,42,94,0.2);
+    }
+
+    .faculty-detail-photo .photo-label {
+      position: absolute;
+      bottom: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      color: var(--mid-gray);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .faculty-detail-body {
+      padding: 24px;
+      flex: 1;
+    }
+
+    .faculty-detail-body h3 {
+      font-size: 1.2rem;
+      margin-bottom: 4px;
+    }
+
+    .faculty-qual {
+      font-size: 0.82rem;
+      color: var(--mid-gray);
+      margin-bottom: 16px;
+      font-style: italic;
+    }
+
+    .spec-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 12px;
+    }
+
+    .spec-tag {
+      background: rgba(21,101,192,0.08);
+      color: var(--accent);
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 20px;
+      letter-spacing: 0.03em;
+    }
+
+    .faculty-contact-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid var(--light-gray);
+    }
+
+    .faculty-contact-btn {
+      flex: 1;
+      text-align: center;
+      padding: 8px 12px;
+      border-radius: var(--radius);
+      font-family: var(--font-heading);
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      background: var(--off-white);
+      color: var(--text-light);
+      border: 1px solid var(--light-gray);
+      cursor: pointer;
+      transition: all var(--transition);
+    }
+
+    .faculty-contact-btn:hover {
+      background: var(--primary);
+      color: var(--white);
+      border-color: var(--primary);
+    }
+
+    .faculty-grid-lg {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 28px;
+      margin-top: 20px;
+    }
+
+    @media (max-width: 768px) {
+      .faculty-grid-lg { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ======= NAVIGATION ======= -->
+  <nav class="navbar" role="navigation">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-brand">
+        <img src="logo.png" alt="Dept Logo" class="logo-img" />
+        <div class="brand-text">
+          <span class="dept-name">Cyber Security</span>
+          <span class="college-name">Department of Excellence</span>
+        </div>
+      </a>
+      <ul class="nav-menu">
+        <li><a href="index.html" class="nav-link">Home</a></li>
+        <li><a href="about.html" class="nav-link">About</a></li>
+        <li><a href="objective.html" class="nav-link">Objective</a></li>
+        <li><a href="faculty.html" class="nav-link">Faculty</a></li>
+        <li><a href="gallery.html" class="nav-link">Gallery</a></li>
+        <li><a href="contact.html" class="nav-link">Contact</a></li>
+        <li><a href="batch.html" class="nav-link">Batch</a></li>
+      </ul>
+      <button class="hamburger" id="hamburger" aria-label="Toggle Menu"><span></span><span></span><span></span></button>
+    </div>
+  </nav>
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="index.html" class="nav-link">Home</a>
+    <a href="about.html" class="nav-link">About</a>
+    <a href="objective.html" class="nav-link">Objective</a>
+    <a href="faculty.html" class="nav-link">Faculty</a>
+    <a href="gallery.html" class="nav-link">Gallery</a>
+    <a href="contact.html" class="nav-link">Contact</a>
+    <a href="batch.html" class="nav-link">Batch</a>
+  </div>
+
+  <!-- ======= PAGE HERO ======= -->
+  <section class="page-hero">
+    <h1>Faculty Members</h1>
+    <p class="breadcrumb"><a href="index.html">Home</a> &rsaquo; Faculty</p>
+  </section>
+
+  <!-- ======= INTRO ======= -->
+  <section class="section-pad" style="padding-bottom:48px;">
+    <div class="container">
+      <div class="section-title reveal">
+        <h2>Meet Our Expert Faculty</h2>
+        <p>
+          Our faculty are experienced professionals and researchers dedicated to providing exceptional
+          education in cyber security. Each brings unique expertise and industry insight to the classroom.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======= HEAD OF DEPARTMENT - FEATURED ======= -->
+  <section style="padding-bottom:48px;">
+    <div class="container">
+      <div style="background:linear-gradient(135deg, var(--primary-dark), var(--primary) 60%, #0d47a1);border-radius:var(--radius-lg);padding:48px;display:grid;grid-template-columns:240px 1fr;gap:48px;align-items:center;position:relative;overflow:hidden;" class="reveal">
+        <!-- Decorative bg -->
+        <div style="position:absolute;right:-60px;top:-60px;width:240px;height:240px;background:rgba(0,188,212,0.1);border-radius:50%;"></div>
+        <div style="position:absolute;left:200px;bottom:-40px;width:180px;height:180px;background:rgba(21,101,192,0.15);border-radius:50%;"></div>
+
+        <div style="text-align:center;position:relative;z-index:1;">
+          <div style="width:160px;height:160px;border-radius:50%;background:linear-gradient(135deg,rgba(0,188,212,0.25),rgba(255,255,255,0.1));border:3px solid rgba(0,188,212,0.4);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
+            <div style="width:140px;height:140px;border-radius:50%;background:linear-gradient(135deg,#1565c0,#00bcd4);display:flex;align-items:center;justify-content:center;font-family:var(--font-heading);font-size:2.5rem;font-weight:700;color:var(--white);">DM</div>
+          </div>
+          <div style="font-family:var(--font-mono);font-size:0.7rem;color:var(--highlight);letter-spacing:0.1em;text-transform:uppercase;">Photo Placeholder</div>
+        </div>
+
+        <div style="position:relative;z-index:1;">
+          <div style="display:inline-block;background:rgba(0,188,212,0.2);border:1px solid rgba(0,188,212,0.4);color:var(--highlight);font-family:var(--font-mono);font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;padding:4px 14px;border-radius:20px;margin-bottom:16px;">Head of Department</div>
+          <h2 style="color:var(--white);font-size:clamp(1.5rem,3vw,2.2rem);margin-bottom:6px;">Dr. M. Daniel Mano</h2>
+          <p style="color:rgba(255,255,255,0.6);font-size:0.9rem;margin-bottom:20px;font-style:italic;">Ph.D. in Computer Science &amp; Engineering</p>
+          <p style="color:rgba(255,255,255,0.75);font-size:0.95rem;line-height:1.75;max-width:480px;">
+            Dr. Daniel Mano leads the Department of Cyber Security with extensive expertise in
+            network defense, intrusion detection, and cybersecurity policy. With years of research
+            and teaching experience, he mentors students to become industry-ready professionals.
+          </p>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:20px;">
+            <span style="background:rgba(0,188,212,0.15);border:1px solid rgba(0,188,212,0.3);color:var(--highlight);font-family:var(--font-mono);font-size:0.7rem;padding:4px 12px;border-radius:20px;letter-spacing:0.05em;">Cyber Security</span>
+            <span style="background:rgba(0,188,212,0.15);border:1px solid rgba(0,188,212,0.3);color:var(--highlight);font-family:var(--font-mono);font-size:0.7rem;padding:4px 12px;border-radius:20px;letter-spacing:0.05em;">Network Defense</span>
+            <span style="background:rgba(0,188,212,0.15);border:1px solid rgba(0,188,212,0.3);color:var(--highlight);font-family:var(--font-mono);font-size:0.7rem;padding:4px 12px;border-radius:20px;letter-spacing:0.05em;">IDS/IPS</span>
+            <span style="background:rgba(0,188,212,0.15);border:1px solid rgba(0,188,212,0.3);color:var(--highlight);font-family:var(--font-mono);font-size:0.7rem;padding:4px 12px;border-radius:20px;letter-spacing:0.05em;">Security Policy</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======= ASSISTANT PROFESSORS ======= -->
+  <section style="padding-bottom:80px;">
+    <div class="container">
+      <h3 style="text-align:center;margin-bottom:36px;font-size:1.3rem;color:var(--mid-gray);font-family:var(--font-mono);letter-spacing:0.06em;text-transform:uppercase;font-weight:600;" class="reveal">// Assistant Professors</h3>
+
+      <div class="faculty-grid-lg">
+
+        <!-- Faculty 2 -->
+        <div class="faculty-detail-card reveal">
+          <div class="faculty-detail-photo">
+            <div class="initials-avatar">MS</div>
+            <span class="photo-label">Photo Placeholder</span>
+          </div>
+          <div class="faculty-detail-body">
+            <div class="faculty-role">Assistant Professor</div>
+            <h3>Mr. Selvi</h3>
+            <p class="faculty-qual">M.Tech in Information Security</p>
+            <p style="font-size:0.9rem;color:var(--text-light);">
+              Specializes in ethical hacking and penetration testing methodologies. Conducts
+              hands-on lab sessions on vulnerability assessment, exploit development, and
+              web application security for students.
+            </p>
+            <div class="spec-tags">
+              <span class="spec-tag">Ethical Hacking</span>
+              <span class="spec-tag">Penetration Testing</span>
+              <span class="spec-tag">VAPT</span>
+              <span class="spec-tag">Web Security</span>
+            </div>
+            <div class="faculty-contact-row">
+              <a href="mailto:selvi@college.edu" class="faculty-contact-btn">Email</a>
+              <a href="#" class="faculty-contact-btn">Profile</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Faculty 3 -->
+        <div class="faculty-detail-card reveal">
+          <div class="faculty-detail-photo" style="background:linear-gradient(155deg,#e0f7fa,#dce8f8,#e8edf5);">
+            <div class="initials-avatar" style="background:linear-gradient(135deg,#00838f,#1565c0);">SA</div>
+            <span class="photo-label">Photo Placeholder</span>
+          </div>
+          <div class="faculty-detail-body">
+            <div class="faculty-role">Assistant Professor</div>
+            <h3>Mr. Saranya</h3>
+            <p class="faculty-qual">M.Sc. in Cloud Computing &amp; Security</p>
+            <p style="font-size:0.9rem;color:var(--text-light);">
+              Expert in cloud security architecture and implementation. Guides students in securing
+              AWS, Azure, and GCP environments, covering IAM policies, data encryption, and
+              cloud-native threat defense strategies.
+            </p>
+            <div class="spec-tags">
+              <span class="spec-tag">Cloud Security</span>
+              <span class="spec-tag">AWS/Azure</span>
+              <span class="spec-tag">DevSecOps</span>
+              <span class="spec-tag">Zero Trust</span>
+            </div>
+            <div class="faculty-contact-row">
+              <a href="mailto:saranya@college.edu" class="faculty-contact-btn">Email</a>
+              <a href="#" class="faculty-contact-btn">Profile</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Faculty 4 -->
+        <div class="faculty-detail-card reveal">
+          <div class="faculty-detail-photo" style="background:linear-gradient(155deg,#fce4ec,#e8edf5,#dce8f8);">
+            <div class="initials-avatar" style="background:linear-gradient(135deg,#ad1457,#1565c0);">AN</div>
+            <span class="photo-label">Photo Placeholder</span>
+          </div>
+          <div class="faculty-detail-body">
+            <div class="faculty-role">Assistant Professor</div>
+            <h3>Mr. Anitha</h3>
+            <p class="faculty-qual">M.Tech in Digital Forensics</p>
+            <p style="font-size:0.9rem;color:var(--text-light);">
+              Specializes in digital forensic investigation and incident response. Teaches students
+              evidence acquisition, chain of custody procedures, malware reverse engineering,
+              and courtroom-ready forensic reporting techniques.
+            </p>
+            <div class="spec-tags">
+              <span class="spec-tag">Digital Forensics</span>
+              <span class="spec-tag">Incident Response</span>
+              <span class="spec-tag">Malware Analysis</span>
+              <span class="spec-tag">DFIR</span>
+            </div>
+            <div class="faculty-contact-row">
+              <a href="mailto:anitha@college.edu" class="faculty-contact-btn">Email</a>
+              <a href="#" class="faculty-contact-btn">Profile</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Placeholder Card -->
+        <div class="faculty-detail-card reveal" style="border:2px dashed var(--light-gray);background:var(--off-white);">
+          <div class="faculty-detail-photo" style="background:var(--light-gray);height:220px;">
+            <div style="text-align:center;">
+              <svg viewBox="0 0 24 24" style="width:56px;height:56px;fill:var(--mid-gray);opacity:0.4;display:block;margin:0 auto 8px;"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+              <span style="font-family:var(--font-mono);font-size:0.7rem;color:var(--mid-gray);text-transform:uppercase;letter-spacing:0.06em;">Position Available</span>
+            </div>
+          </div>
+          <div class="faculty-detail-body" style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;min-height:160px;">
+            <h3 style="color:var(--mid-gray);">Recruitment Open</h3>
+            <p style="font-size:0.88rem;margin-top:8px;">We are actively looking for talented faculty to join our growing department.</p>
+            <a href="contact.html" class="btn btn-primary" style="margin-top:16px;font-size:0.85rem;padding:10px 20px;">Apply Now</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ======= FOOTER ======= -->
+  <footer class="footer" role="contentinfo">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <div class="brand-icon" style="background:linear-gradient(135deg,rgba(255,255,255,0.15),rgba(0,188,212,0.2));border:1px solid rgba(255,255,255,0.15);">
+              <svg viewBox="0 0 24 24" style="width:22px;height:22px;fill:#00bcd4;"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>
+            </div>
+            <div>
+              <div style="font-family:var(--font-heading);font-weight:700;color:var(--white);font-size:1rem;letter-spacing:0.05em;text-transform:uppercase;">Cyber Security Dept.</div>
+              <div style="font-size:0.72rem;color:rgba(255,255,255,0.4);">Department of Excellence</div>
+            </div>
+          </div>
+          <p>Providing world-class cyber security education and training to build the next generation of digital defenders.</p>
+        </div>
+        <div>
+          <h4>Quick Links</h4>
+          <div class="footer-links">
+            <a href="index.html">Home</a>
+            <a href="about.html">About Department</a>
+            <a href="objective.html">Objectives</a>
+            <a href="faculty.html">Faculty Members</a>
+            <a href="gallery.html">Gallery</a>
+            <a href="contact.html">Contact Us</a>
+          </div>
+        </div>
+        <div>
+          <h4>Contact Info</h4>
+          <div class="footer-links">
+            <a href="mailto:cybersecurity@college.edu">cybersecurity@college.edu</a>
+            <a href="tel:+918667316956">+91 8667316956</a>
+          </div>
+          <div style="margin-top:16px;font-size:0.85rem;color:rgba(255,255,255,0.5);line-height:1.8;">
+            Cyber Security Department<br>Your College Name<br>Chennai, Tamil Nadu — 600001
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <div>© 2026 <span>Cyber Security Department</span>. All Rights Reserved.</div>
+        <div>Built with &#x2764; for Digital Excellence</div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+  <script src="cyberbot.js"></script>
+  <script src="cyber-extras.js"></script>
+</body>
+</html>

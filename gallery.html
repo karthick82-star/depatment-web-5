@@ -1,0 +1,1565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gallery | Cyber Security Department</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%230a2a5e'/><path d='M16 6l8 4v8c0 5-8 9-8 9s-8-4-8-9v-8z' fill='%2300bcd4'/></svg>" />
+  <style>
+    /* ═══════════════════════════════════════════
+       GALLERY PAGE — CAROUSEL-BASED SECTIONS
+    ═══════════════════════════════════════════ */
+
+    /* ── Section wrapper ── */
+    .event-section {
+      margin-bottom: 72px;
+    }
+
+    .event-section-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 28px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid rgba(0,229,255,0.12);
+    }
+
+    .event-section-icon {
+      width: 46px;
+      height: 46px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, rgba(0,188,212,0.18), rgba(0,100,160,0.25));
+      border: 1px solid rgba(0,229,255,0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      flex-shrink: 0;
+    }
+
+    .event-section-info h3 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #fff;
+      margin: 0 0 4px;
+      font-family: var(--font-heading, 'Segoe UI', sans-serif);
+    }
+
+    .event-section-info p {
+      font-size: 0.82rem;
+      color: rgba(255,255,255,0.45);
+      margin: 0;
+      font-family: var(--font-mono, monospace);
+      letter-spacing: 0.06em;
+    }
+
+    .event-count-badge {
+      margin-left: auto;
+      background: rgba(0,188,212,0.12);
+      border: 1px solid rgba(0,229,255,0.25);
+      color: #00e5ff;
+      font-family: var(--font-mono, monospace);
+      font-size: 0.72rem;
+      padding: 4px 12px;
+      border-radius: 20px;
+      letter-spacing: 0.06em;
+      white-space: nowrap;
+    }
+
+    /* ── Carousel ── */
+    .carousel-wrapper {
+      position: relative;
+    }
+
+    .carousel-track-outer {
+      overflow: hidden;
+      border-radius: 16px;
+    }
+
+    .carousel-track {
+      display: flex;
+      gap: 0;
+      transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      will-change: transform;
+    }
+
+    /* Each slide = one card, always 100% of the outer */
+    .carousel-slide {
+      flex: 0 0 100%;
+      min-width: 0;
+      box-sizing: border-box;
+    }
+
+    /* ── Gallery card inside a slide ── */
+    .gallery-card {
+      position: relative;
+      overflow: hidden;
+      border-radius: 16px;
+      cursor: pointer;
+      background: #0a1628;
+      aspect-ratio: 16/9;
+      border: 1px solid rgba(0,229,255,0.12);
+      box-shadow: 0 4px 24px rgba(0,0,0,0.22);
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .gallery-card:hover {
+      box-shadow: 0 0 0 2px rgba(0,229,255,0.3), 0 16px 48px rgba(0,188,212,0.2);
+      border-color: rgba(0,229,255,0.35);
+    }
+
+    .gallery-card img.gc-photo {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.5s ease, filter 0.35s ease;
+      filter: brightness(0.9) saturate(1.1);
+    }
+
+    .gallery-card:hover img.gc-photo {
+      transform: scale(1.04);
+      filter: brightness(1) saturate(1.2);
+    }
+
+    /* Scan-line effect */
+    .gallery-card::before {
+      content: '';
+      position: absolute;
+      top: -100%;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, #00e5ff, transparent);
+      z-index: 3;
+      pointer-events: none;
+      transition: top 0s;
+    }
+    .gallery-card:hover::before {
+      top: 100%;
+      transition: top 0.65s ease;
+    }
+
+    /* Gradient overlay */
+    .gc-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top,
+        rgba(5,20,50,0.92) 0%,
+        rgba(8,35,85,0.5) 50%,
+        rgba(0,0,0,0.02) 100%);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 22px 20px;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      z-index: 2;
+    }
+
+    .gallery-card:hover .gc-overlay { opacity: 1; }
+
+    .gc-overlay .ov-tag {
+      font-family: var(--font-mono, monospace);
+      font-size: 0.68rem;
+      letter-spacing: 0.1em;
+      color: #00e5ff;
+      text-transform: uppercase;
+      margin-bottom: 5px;
+      opacity: 0.9;
+    }
+
+    .gc-overlay .ov-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.3;
+      margin-bottom: 5px;
+      font-family: var(--font-heading, 'Segoe UI', sans-serif);
+    }
+
+    .gc-overlay .ov-date {
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.5);
+      font-family: var(--font-mono, monospace);
+    }
+
+    /* Eye icon */
+    .gc-eye {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0.75);
+      width: 52px;
+      height: 52px;
+      background: rgba(0,188,212,0.18);
+      border: 2px solid rgba(0,229,255,0.5);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      z-index: 3;
+    }
+    .gc-eye svg { width: 24px; height: 24px; fill: #00e5ff; }
+    .gallery-card:hover .gc-eye {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+    }
+
+    /* Badge */
+    .gc-badge {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      background: rgba(5,18,48,0.88);
+      border: 1px solid rgba(0,229,255,0.3);
+      color: #00e5ff;
+      font-family: var(--font-mono, monospace);
+      font-size: 0.63rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 20px;
+      z-index: 4;
+      backdrop-filter: blur(6px);
+    }
+
+    /* ── Carousel controls ── */
+    .carousel-controls {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 16px;
+    }
+
+    .carousel-dots {
+      display: flex;
+      gap: 7px;
+      align-items: center;
+    }
+
+    .carousel-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: rgba(0,229,255,0.2);
+      border: 1px solid rgba(0,229,255,0.3);
+      cursor: pointer;
+      transition: all 0.25s ease;
+    }
+
+    .carousel-dot.active {
+      background: #00e5ff;
+      width: 24px;
+      border-radius: 4px;
+      box-shadow: 0 0 8px rgba(0,229,255,0.6);
+    }
+
+    .carousel-nav {
+      display: flex;
+      gap: 8px;
+    }
+
+    .carousel-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(0,229,255,0.2);
+      color: rgba(255,255,255,0.7);
+      font-size: 1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+    }
+
+    .carousel-btn:hover {
+      background: rgba(0,229,255,0.12);
+      border-color: #00e5ff;
+      color: #00e5ff;
+    }
+
+    .carousel-btn:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+
+    /* Slide counter */
+    .carousel-counter {
+      font-family: var(--font-mono, monospace);
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.35);
+      letter-spacing: 0.08em;
+    }
+
+    /* ── Filter bar ── */
+    .gallery-filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      margin-bottom: 48px;
+    }
+
+    .filter-btn {
+      font-family: var(--font-mono, monospace);
+      font-size: 0.78rem;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      padding: 8px 18px;
+      border-radius: 20px;
+      border: 1.5px solid rgba(0,188,212,0.3);
+      background: transparent;
+      color: rgba(3, 3, 3, 0.6);
+      cursor: pointer;
+      transition: all 0.25s;
+    }
+
+    .filter-btn:hover,
+    .filter-btn.active {
+      background: #00bcd4;
+      border-color: #00bcd4;
+      color: #fff;
+      box-shadow: 0 4px 16px rgba(0,188,212,0.35);
+    }
+
+    /* ── Lightbox ── */
+    .lightbox {
+      position: fixed;
+      inset: 0;
+      background: rgba(3,10,26,0.97);
+      z-index: 10000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+      padding: 20px;
+    }
+
+    .lightbox.open { opacity: 1; pointer-events: all; }
+
+    .lightbox-inner {
+      background: #070f22;
+      border: 1px solid rgba(0,229,255,0.2);
+      border-radius: 18px;
+      padding: 24px;
+      max-width: 820px;
+      width: 100%;
+      position: relative;
+      box-shadow: 0 0 80px rgba(0,188,212,0.15);
+      animation: lbPop 0.35s cubic-bezier(0.34,1.56,0.64,1) both;
+    }
+
+    @keyframes lbPop {
+      from { transform: scale(0.88); opacity: 0; }
+      to   { transform: scale(1);    opacity: 1; }
+    }
+
+    .lightbox-photo {
+      width: 100%;
+      max-height: 460px;
+      object-fit: contain;
+      border-radius: 12px;
+      margin-bottom: 18px;
+      border: 1px solid rgba(0,229,255,0.1);
+      background: #0a1628;
+    }
+
+    .lb-info { flex: 1; }
+    .lb-info .lb-cat {
+      font-family: var(--font-mono, monospace);
+      font-size: 0.7rem;
+      color: #00e5ff;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      display: block;
+      margin-bottom: 7px;
+    }
+    .lb-info h3 { color: #fff; font-size: 1.15rem; margin-bottom: 6px; }
+    .lb-info p  { color: rgba(255,255,255,0.5); font-size: 0.87rem; line-height: 1.65; }
+
+    .lightbox-close {
+      position: absolute;
+      top: 14px; right: 14px;
+      width: 36px; height: 36px;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 9px;
+      cursor: pointer;
+      color: rgba(255,255,255,0.65);
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+    .lightbox-close:hover {
+      background: rgba(0,229,255,0.14);
+      color: #00e5ff;
+      border-color: #00e5ff;
+    }
+
+    /* lb nav arrows */
+    .lb-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 14px;
+    }
+    .lb-nav-btn {
+      width: 38px; height: 38px;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(0,229,255,0.2);
+      color: rgba(255, 255, 255, 0.85);
+      font-size: 1.1rem;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.2s;
+    }
+    .lb-nav-btn:hover {
+      background: rgba(0,229,255,0.14);
+      color: #00e5ff;
+      border-color: #00e5ff;
+    }
+    .lb-slide-counter {
+      font-family: var(--font-mono, monospace);
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.3);
+    }
+
+    /* hidden sections when filtered */
+    .event-section[data-hidden="true"] { display: none; }
+
+    /* ── Responsive ── */
+    @media (max-width: 600px) {
+      .gallery-card { aspect-ratio: 4/3; }
+      .event-section-header { flex-wrap: wrap; }
+      .event-count-badge { margin-left: 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ======= NAVIGATION ======= -->
+  <nav class="navbar" role="navigation">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-brand">
+        <img src="logo.png" alt="Dept Logo" class="logo-img" />
+        <div class="brand-text">
+          <span class="dept-name">Cyber Security</span>
+          <span class="college-name">Dept. of Computer Science</span>
+        </div>
+      </a>
+      <ul class="nav-menu">
+        <li><a href="index.html" class="nav-link">Home</a></li>
+        <li><a href="about.html" class="nav-link">About</a></li>
+        <li><a href="objective.html" class="nav-link">Objective</a></li>
+        <li><a href="faculty.html" class="nav-link">Faculty</a></li>
+        <li><a href="gallery.html" class="nav-link active">Gallery</a></li>
+        <li><a href="contact.html" class="nav-link">Contact</a></li>
+               <li><a href="batch.html" class="nav-link">Batch</li>
+      </ul>
+      <button class="hamburger" id="hamburger" aria-label="Toggle Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="index.html" class="nav-link">Home</a>
+    <a href="about.html" class="nav-link">About</a>
+    <a href="objective.html" class="nav-link">Objective</a>
+    <a href="faculty.html" class="nav-link">Faculty</a>
+    <a href="gallery.html" class="nav-link">Gallery</a>
+    <a href="contact.html" class="nav-link">Contact</a>
+    <a href="batch.html" class="nav-link">Batch</a>
+  </div>
+
+  <!-- ======= PAGE HERO ======= -->
+  <section class="page-hero">
+    <h1>Department Gallery</h1>
+    <p class="breadcrumb"><a href="index.html">Home</a> &rsaquo; Gallery</p>
+  </section>
+
+  <!-- ======= GALLERY SECTION ======= -->
+  <section class="section-pad">
+    <div class="container">
+
+      <div class="section-title reveal">
+        <h2>Our Activities &amp; Events</h2>
+        <p>A visual journey through Teacher's Day, Pongal, Parents' Meeting, Cyber Crime awareness, extension activities, and more at Erode Arts &amp; Science College.</p>
+      </div>
+
+      <!-- ── FILTER BUTTONS ── -->
+      <div class="gallery-filters reveal">
+        <button class="filter-btn active" data-filter="all">All Events</button>
+        <button class="filter-btn" data-filter="teachers">Teacher's Day</button>
+        <button class="filter-btn" data-filter="pongal">Pongal</button>
+        <button class="filter-btn" data-filter="parents">Parents' Meeting</button>
+        <button class="filter-btn" data-filter="cybercrime">Cyber Crime</button>
+        <button class="filter-btn" data-filter="digilocker">DigiLocker</button>
+        <button class="filter-btn" data-filter="drug">Drug Awareness</button>
+        <button class="filter-btn" data-filter="exhibition">Exhibition</button>
+        <button class="filter-btn" data-filter="extension">Extension Activities</button>
+        <button class="filter-btn" data-filter="hacking">Ethical Hacking</button>
+        <button class="filter-btn" data-filter="freshers">Freshers Day</button>
+      </div>
+
+      <!-- ════════════════════════════════════════
+           1. TEACHER'S DAY
+      ════════════════════════════════════════ -->
+      <div class="event-section reveal" data-category="teachers" id="sec-teachers">
+        <div class="event-section-header">
+          <div class="event-section-icon">🎓</div>
+          <div class="event-section-info">
+            <h3>Teacher's Day Celebration</h3>
+            <p>05 September 2023 &amp; 05 September 2024 · Dept. of CS with Cyber Security</p>
+          </div>
+          <span class="event-count-badge">8 PHOTOS</span>
+        </div>
+        <div class="carousel-wrapper" id="car-teachers">
+          <div class="carousel-track-outer">
+            <div class="carousel-track" id="track-teachers">
+
+              <!-- Slide 1: Blackboard Intro 2023 -->
+              <div class="carousel-slide">
+                <div class="gallery-card"
+                     data-img="teachers day intro.jpeg"
+                     data-title="Teacher's Day 2023 — Blackboard Greeting"
+                     data-desc="The department blackboard beautifully decorated with 'Happy Teacher's Day' wishes by students of Dept. of Computer Science with Cyber Security."
+                     data-date="05 September 2023">
+                  <img src="teacher 1.jpeg" alt="Teachers Day Blackboard" class="gc-photo" loading="lazy" />
+                  <span class="gc-badge">Teacher's Day</span>
+                  <div class="gc-eye"><svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg></div>
+                  <div class="gc-overlay">
+                    <span class="ov-tag">🎓 Teacher's Day · 2023</span>
+                    <div class="ov-title">Blackboard Greeting Display</div>
+                    <span class="ov-date">05 Sep 2023 · Erode Arts &amp; Science College</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Slide 2: Classroom gathering 2023 -->
+              <div class="carousel-slide">
+                <div class="gallery-card"
+                     data-img="teachersday 3.jpeg"
+                     data-title="Teacher's Day 2023 — Classroom Celebration"
+                     data-desc="Students and faculty gathered in the classroom for the Teacher's Day 2023 celebration. The blackboard reads 'Teacher's Day Celebration [05.09.2023]'."
+                     data-date="05 September 2023">
+                  <img src="teachers day 2.jpeg" alt="Teachers Day Classroom 2023" class="gc-photo" loading="lazy" />
+                  <span class="gc-badge">Teacher's Day</span>
+                  <div class="gc-eye"><svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg></div>
+                  <div class="gc-overlay">
+                    <span class="ov-tag">🎓 Teacher's Day · 2023</span>
+                    <div class="ov-title">Classroom Celebration — Students &amp; Faculty</div>
+                    <span class="ov-date">05 Sep 2023</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Slide 3: Faculty group at college event 2024 -->
+              <div class="carousel-slide">
+                <div class="gallery-card"
+                     data-img="teachers day 2.jpeg"
+                     data-title="Teacher's Day 2024 — Faculty Group Photo"
+                     data-desc="Faculty members of the Department of CS with Cyber Security posing together in front of the Teacher's Day Best Wishes banner at the college event."
+                     data-date="05 September 2024">
+                  <img src="teachers day 6.jpeg" alt="Teachers Day Faculty Group 2024" class="gc-photo" loading="lazy" />
+                  <span class="gc-badge">Teacher's Day</span>
+                  <div class="gc-eye"><svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg></div>
+                  <div class="gc-overlay">
+                    <span class="ov-tag">🎓 Teacher's Day · 2024</span>
+                    <div class="ov-title">Faculty Group Photo — Best Wishes Banner</div>
+                    <span class="ov-date">05 Sep 2024</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Slide 4: Gift handover by student 2024 -->
+              <div class="carousel-slide">
+                <div class="gallery-card"
+                     data-img="teachers day.jpeg"
+                     data-title="Teacher's Day 2024 — Gift Presentation"
+                     data-desc="A student presenting a gift to a faculty member in front of the beautifully decorated Happy Teacher's Day blackboard in the Department of CS with Cyber Security."
+                     data-date="05 September 2024">
+                  <img src="teachers day intro.jpeg" alt="Teachers Day Gift 2024" class="gc-photo" loading="lazy" />
+                  <span class="gc-badge">Teacher's Day</span>
+                  <div class="gc-eye"><svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg></div>
+                  <div class="gc-overlay">
+                    <span class="ov-tag">🎓 Teacher's Day · 2024</span>
+                    <div class="ov-title">Gift Presentation to Faculty</div>
+                    <span class="ov-date">05 Sep 2024</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Slide 5: Students gifting teacher 2024 -->
+              <div class="carousel-slide">
+                <div class="gallery-card"
+                     data-img="teachers day4.jpeg"
+                     data-title="Teacher's Day 2024 — Students Gifting Faculty"
+                     data-desc="Students presenting gifts to faculty members during the 2024 Teacher's Day celebration in the classroom."
+                     data-date="05 September 2024">
+                  <img src="teachers day.jpeg" alt="Students Gifting Teacher 2024" class="gc-photo" loading="lazy" />
+                  <span class="gc-badge">Teacher's Day</span>
+                  <div class="gc-eye"><svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg></div>
+                  <div class="gc-overlay">
+                    <span class="ov-tag">🎓 Teacher's Day · 2024</span>
+                    <div class="ov-title">Students Gifting Faculty</div>
+                    <span class="ov-date">05 Sep 2024</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Slide 6: Classroom full view 2024 -->
+              <div class="carousel-slide">
+                <div class="gallery-card"
+                     data-img="teachers5.jpeg"
+                     data-title="Teacher's Day 2024 — Classroom Full View"
+                     data-desc="Students seated in the classroom during the Teacher's Day 2024 celebration, with faculty standing near the decorated blackboard."
+                     data-date="05 September 2024">
+                  <img src="teachers day4.jpeg" alt="Classroom Full View 2024" class="gc-photo" loading="lazy" />
+                  <span class="gc-badge">Teacher's Day</span>
+                  <div class="gc-eye"><svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg></div>
+                  <div class="gc-overlay">
+                    <span class="ov-tag">🎓 Teacher's Day · 2024</span>
+                    <div class="ov-title">Full Classroom View — Celebration</div>
+                    <span class="ov-date">05 Sep 2024</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Slide 7: Faculty photo booth 2024 -->
+              <div class="carousel-slide">
+                <div class="gallery-card"
+                     data-img="teachers day 6.jpeg"
+                     data-title="Teacher's Day 2024 — Photo Booth"
+                     data-desc="Faculty members posing together at the special Teacher's Day photo booth erected by the college, showing Tamil greetings for 'Aasiryar Thinam' (Teacher's Day)."
+                     data-date="05 September 2024">
+                  <img src="teachers5.jpeg" alt="Faculty Photo Booth 2024" class="gc-photo" loading="lazy" />
+                  <span class="gc-badge">Teacher's Day</span>
+                  <div class="gc-eye"><svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg></div>
+                  <div class="gc-overlay">
+                    <span class="ov-tag">🎓 Teacher's Day · 2024</span>
+                    <div class="ov-title">Faculty at Teacher's Day Photo Booth</div>
+                    <span class="ov-date">05 Sep 2024 · Erode Arts &amp; Science College</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Slide 8: Faculty group at college (industrial visit pic) -->
+              <div class="carousel-slide">
+                <div class="gallery-card"
+                     data-img="teacher 1.jpeg"
+                     data-title="Teacher's Day 2024 — Faculty Group Photo"
+                     data-desc="Faculty members of the Cyber Security department posing for a group photo at the college entrance during Teacher's Day celebrations."
+                     data-date="05 September 2024">
+                  <img src="teachersday 3.jpeg" alt="Faculty Group Photo 2024" class="gc-photo" loading="lazy" />
+                  <span class="gc-badge">Teacher's Day</span>
+                  <div class="gc-eye"><svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg></div>
+                  <div class="gc-overlay">
+                    <span class="ov-tag">🎓 Teacher's Day · 2024</span>
+                    <div class="ov-title">Faculty Group Photo — College Campus</div>
+                    <span class="ov-date">05 Sep 2024</span>
+                  </div>
+                </div>
+              </div>
+
+            </div><!-- /track-teachers -->
+          </div>
+          <div class="carousel-controls">
+            <div class="carousel-dots" id="dots-teachers"></div>
+            <span class="carousel-counter" id="counter-teachers">1 / 8</span>
+            <div class="carousel-nav">
+              <button class="carousel-btn" id="prev-teachers" aria-label="Previous">&#8592;</button>
+              <button class="carousel-btn" id="next-teachers" aria-label="Next">&#8594;</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ════════════════════════════════════════
+           2. PONGAL CELEBRATION
+      ════════════════════════════════════════ -->
+      <div class="event-section reveal" data-category="pongal" id="sec-pongal">
+        <div class="event-section-header">
+          <div class="event-section-icon">🪔</div>
+          <div class="event-section-info">
+            <h3>Pongal Celebration</h3>
+            <p>15 January 2024 · Dept. of CS with Cyber Security</p>
+          </div>
+          <span class="event-count-badge">2 PHOTOS</span>
+        </div>
+        <div class="carousel-wrapper" id="car-pongal">
+          <div class="carousel-track-outer">
+            <div class="carousel-track" id="track-pongal">
+
+              <div class="carousel-slide">
+                <div class="gallery-card"
+                     data-img="pongal2.jpeg"
+                     data-title="Pongal Celebration 2024 — Classroom Gathering"
+                     data-desc="Students and faculty gathered in a festively decorated classroom for the Pongal celebration, with colorful streamers and a traditional puja setup at the front."
+                     data-date="15 January 2024">
+                  <img src="pongal2.jpeg" alt="Pongal Celebration Classroom" class="gc-photo" loading="lazy" />
+                  <span class="gc-badge">Pongal</span>
+                  <div class="gc-eye"><svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg></div>
+                  <div class="gc-overlay">
+                    <span class="ov-tag">🪔 Pongal · Jan 2024</span>
+                    <div class="ov-title">Classroom Gathering — Festive Decoration</div>
+                    <span class="ov-date">15 Jan 2024 · Erode Arts &amp; Science College</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="carousel-slide">
+                <div class="gallery-card"
+                     data-img="pongal3.jpeg"
+                     data-title="Pongal Celebration 2024 — Group Photo"
+                     data-desc="Students dressed in traditional attire posing with faculty members for a group photo during the Pongal celebration, with colorful decorations adorning the classroom."
+                     data-date="15 January 2024">
+                  <img src="pongal3.jpeg" alt="Pongal Group Photo" class="gc-photo" loading="lazy" />
+                  <span class="gc-badge">Pongal</span>
+                  <div class="gc-eye"><svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg></div>
+                  <div class="gc-overlay">
+                    <span class="ov-tag">🪔 Pongal · Jan 2024</span>
+                    <div class="ov-title">Traditional Attire Group Photo</div>
+                    <span class="ov-date">15 Jan 2024</span>
+                  </div>
+                </div>
+              </div>
+
+            </div><!-- /track-pongal -->
+          </div>
+          <div class="carousel-controls">
+            <div class="carousel-dots" id="dots-pongal"></div>
+            <span class="carousel-counter" id="counter-pongal">1 / 2</span>
+            <div class="carousel-nav">
+              <button class="carousel-btn" id="prev-pongal" aria-label="Previous">&#8592;</button>
+              <button class="carousel-btn" id="next-pongal" aria-label="Next">&#8594;</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ════════════════════════════════════════
+           3. PARENTS' MEETING
+      ════════════════════════════════════════ -->
+      <div class="event-section reveal" data-category="parents" id="sec-parents">
+        <div class="event-section-header">
+          <div class="event-section-icon">👨‍👩‍👧</div>
+          <div class="event-section-info">
+            <h3>Parents' Meeting</h3>
+            <p>23 January 2024 · Dept. of CS with Cyber Security</p>
+          </div>
+          <span class="event-count-badge">1 PHOTO</span>
+        </div>
+        <div class="carousel-wrapper" id="car-parents">
+          <div class="carousel-track-outer">
+            <div class="carousel-track" id="track-parents">
+
+              <div class="carousel-slide">
+                <div class="gallery-card"
+                     data-img="pte1.jpeg"
+                     data-title="Parents' Meeting 2024 — Faculty & Parents Interaction"
+                     data-desc="Faculty members and parents engaged in a one-on-one interaction during the Parents' Meeting held at the department office in Rangampalayam, Erode."
+                     data-date="23 January 2024">
+                  <img src="pte1.jpeg" alt="Parents Meeting" class="gc-photo" loading="lazy" />
+                  <span class="gc-badge">Parents' Meeting</span>
+                  <div class="gc-eye"><svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg></div>
+                  <div class="gc-overlay">
+                    <span class="ov-tag">👨‍👩‍👧 Parents' Meeting · Jan 2024</span>
+                    <div class="ov-title">Faculty &amp; Parents Interaction Session</div>
+                    <span class="ov-date">23 Jan 2024 · Rangampalayam, Erode</span>
+                  </div>
+                </div>
+              </div>
+
+            </div><!-- /track-parents -->
+          </div>
+          <div class="carousel-controls">
+            <div class="carousel-dots" id="dots-parents"></div>
+            <span class="carousel-counter" id="counter-parents">1 / 1</span>
+            <div class="carousel-nav">
+              <button class="carousel-btn" id="prev-parents" aria-label="Previous">&#8592;</button>
+              <button class="carousel-btn" id="next-parents" aria-label="Next">&#8594;</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ════════════════════════════════════════
+           4. CYBER CRIME AWARENESS
+      ════════════════════════════════════════ -->
+      <div class="event-section reveal" data-category="cybercrime" id="sec-cybercrime">
+        <div class="event-section-header">
+          <div class="event-section-icon">🛡️</div>
+          <div class="event-section-info">
+            <h3>Cyber Crime &amp; Security Awareness</h3>
+            <p>09 February 2023 · Student Development Programme · Resource: Insp. J. Jeyasudha, Cyber Crime Police Station</p>
+          </div>
+          <span class="event-count-badge">2 PHOTOS</span>
+        </div>
+        <div class="carousel-wrapper" id="car-cybercrime">
+          <div class="carousel-track-outer">
+            <div class="carousel-track" id="track-cybercrime">
+
+              <div class="carousel-slide">
+                <div class="gallery-card"
+                     data-img="cyber crime1.jpeg"
+                     data-title="Cyber Crime Awareness — Inauguration Stage"
+                     data-desc="The inauguration stage of the Student Development Programme on 'Awareness of Cyber Crime and Security', with faculty, guests, and Inspector J. Jeyasudha of the Cyber Crime Police Station at Erode Arts and Science College."
+                     data-date="09 February 2023">
+                  <img src="cyber crime1.jpeg" alt="Cyber Crime Awareness Inauguration" class="gc-photo" loading="lazy" />
+                  <span class="gc-badge">Cyber Crime</span>
+                  <div class="gc-eye"><svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg></div>
+                  <div class="gc-overlay">
+                    <span class="ov-tag">🛡️ Cyber Crime Awareness · Feb 2023</span>
+                    <div class="ov-title">Inauguration Stage — Awareness Programme</div>
+                    <span class="ov-date">09 Feb 2023 · Thiruvalluvar Aarangam</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="carousel-slide">
+                <div class="gallery-card"
+                     data-img="cyber crime 2.jpeg"
+                     data-title="Cyber Crime Awareness — Felicitation &amp; Memento"
+                     data-desc="Faculty presenting a memento to Inspector J. Jeyasudha of the Cyber Crime Police Station, Erode, on stage during the Student Development Programme on Cyber Crime and Security."
+                     data-date="09 February 2023">
+                  <img src="cyber crime 2.jpeg" alt="Cyber Crime Awareness Felicitation" class="gc-photo" loading="lazy" />
+                  <span class="gc-badge">Cyber Crime</span>
+                  <div class="gc-eye"><svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg></div>
+                  <div class="gc-overlay">
+                    <span class="ov-tag">🛡️ Cyber Crime Awareness · Feb 2023</span>
+                    <div class="ov-title">Felicitation &amp; Memento to Resource Person</div>
+                    <span class="ov-date">09 Feb 2023</span>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+          <div class="carousel-controls">
+            <div class="carousel-dots" id="dots-cybercrime"></div>
+            <span class="carousel-counter" id="counter-cybercrime">1 / 2</span>
+            <div class="carousel-nav">
+              <button class="carousel-btn" id="prev-cybercrime" aria-label="Previous">&#8592;</button>
+              <button class="carousel-btn" id="next-cybercrime" aria-label="Next">&#8594;</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ════════════════════════════════════════
+           5. DIGILOCKER SESSION
+      ════════════════════════════════════════ -->
+      <div class="event-section reveal" data-category="digilocker" id="sec-digilocker">
+        <div class="event-section-header">
+          <div class="event-section-icon">📱</div>
+          <div class="event-section-info">
+            <h3>DigiLocker Awareness Session</h3>
+            <p>04 October 2023 · Dept. of CS with Cyber Security</p>
+          </div>
+          <span class="event-count-badge">1 PHOTO</span>
+        </div>
+        <div class="carousel-wrapper" id="car-digilocker">
+          <div class="carousel-track-outer">
+            <div class="carousel-track" id="track-digilocker">
+
+              <div class="carousel-slide">
+                <div class="gallery-card"
+                     data-img="digilocker1.jpeg"
+                     data-title="DigiLocker Awareness — Classroom Session"
+                     data-desc="A faculty member conducting a classroom session on DigiLocker awareness for students of Dept. of CS with Cyber Security at Erode, Tamil Nadu."
+                     data-date="04 October 2023">
+                  <img src="digilocker1.jpeg" alt="DigiLocker Awareness Session" class="gc-photo" loading="lazy" />
+                  <span class="gc-badge">DigiLocker</span>
+                  <div class="gc-eye"><svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg></div>
+                  <div class="gc-overlay">
+                    <span class="ov-tag">📱 DigiLocker · Oct 2023</span>
+                    <div class="ov-title">DigiLocker Awareness — Classroom Session</div>
+                    <span class="ov-date">04 Oct 2023 · Erode, Tamil Nadu</span>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+          <div class="carousel-controls">
+            <div class="carousel-dots" id="dots-digilocker"></div>
+            <span class="carousel-counter" id="counter-digilocker">1 / 1</span>
+            <div class="carousel-nav">
+              <button class="carousel-btn" id="prev-digilocker" aria-label="Previous">&#8592;</button>
+              <button class="carousel-btn" id="next-digilocker" aria-label="Next">&#8594;</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ════════════════════════════════════════
+           6. DRUG AWARENESS — PLEDGE CEREMONY
+      ════════════════════════════════════════ -->
+      <div class="event-section reveal" data-category="drug" id="sec-drug">
+        <div class="event-section-header">
+          <div class="event-section-icon">✊</div>
+          <div class="event-section-info">
+            <h3>Drug Awareness — Pledge Ceremony</h3>
+            <p>09 September 2024 · Dept. of CS with Cyber Security · Rangampalayam</p>
+          </div>
+          <span class="event-count-badge">3 PHOTOS</span>
+        </div>
+        <div class="carousel-wrapper" id="car-drug">
+          <div class="carousel-track-outer">
+            <div class="carousel-track" id="track-drug">
+
+              <div class="carousel-slide">
+                <div class="gallery-card"
+                     data-img="drug awareness 4.jpeg"
+                     data-title="Drug Awareness — Pledge Ceremony (Mixed Batch)"
+                     data-desc="Students and faculty members taking the drug awareness pledge together in the classroom, with hands outstretched in commitment, on 09 September 2024."
+                     data-date="09 September 2024">
+                  <img src="drug awareness 4.jpeg" alt="Drug Awareness Pledge Mixed" class="gc-photo" loading="lazy" />
+                  <span class="gc-badge">Drug Awareness</span>
+                  <div class="gc-eye"><svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg></div>
+                  <div class="gc-overlay">
+                    <span class="ov-tag">✊ Drug Awareness · Sep 2024</span>
+                    <div class="ov-title">Pledge Ceremony — Mixed Batch</div>
+                    <span class="ov-date">09 Sep 2024 · Rangampalayam</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="carousel-slide">
+                <div class="gallery-card"
+                     data-img="drug awareness1.jpeg"
+                     data-title="Drug Awareness — Student Pledge (Mixed Batch 2)"
+                     data-desc="A second batch of CS students taking the anti-drug awareness pledge in the classroom, led by a faculty coordinator, on 09 September 2024."
+                     data-date="09 September 2024">
+                  <img src="drug awareness1.jpeg" alt="Drug Awareness Pledge Batch 2" class="gc-photo" loading="lazy" />
+                  <span class="gc-badge">Drug Awareness</span>
+                  <div class="gc-eye"><svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg></div>
+                  <div class="gc-overlay">
+                    <span class="ov-tag">✊ Drug Awareness · Sep 2024</span>
+                    <div class="ov-title">Student Pledge — Batch 2</div>
+                    <span class="ov-date">09 Sep 2024</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="carousel-slide">
+                <div class="gallery-card"
+                     data-img="drug awareness2.jpeg"
+                     data-title="Drug Awareness — Male Students Pledge"
+                     data-desc="Male students of the Cyber Security department raising their hands in the drug awareness pledge ceremony, demonstrating their commitment to a drug-free campus."
+                     data-date="09 September 2024">
+                  <img src="drug awareness2.jpeg" alt="Drug Awareness Male Students Pledge" class="gc-photo" loading="lazy" />
+                  <span class="gc-badge">Drug Awareness</span>
+                  <div class="gc-eye"><svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg></div>
+                  <div class="gc-overlay">
+                    <span class="ov-tag">✊ Drug Awareness · Sep 2024</span>
+                    <div class="ov-title">Male Students Drug-Free Pledge</div>
+                    <span class="ov-date">09 Sep 2024</span>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+          <div class="carousel-controls">
+            <div class="carousel-dots" id="dots-drug"></div>
+            <span class="carousel-counter" id="counter-drug">1 / 3</span>
+            <div class="carousel-nav">
+              <button class="carousel-btn" id="prev-drug" aria-label="Previous">&#8592;</button>
+              <button class="carousel-btn" id="next-drug" aria-label="Next">&#8594;</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ════════════════════════════════════════
+           7. EXHIBITION (CBC Chennai)
+      ════════════════════════════════════════ -->
+      <div class="event-section reveal" data-category="exhibition" id="sec-exhibition">
+        <div class="event-section-header">
+          <div class="event-section-icon">🏛️</div>
+          <div class="event-section-info">
+            <h3>Exhibition — CBC Chennai</h3>
+            <p>Department students at the CBC Chennai Digital India Exhibition</p>
+          </div>
+          <span class="event-count-badge">1 PHOTO</span>
+        </div>
+        <div class="carousel-wrapper" id="car-exhibition">
+          <div class="carousel-track-outer">
+            <div class="carousel-track" id="track-exhibition">
+
+              <div class="carousel-slide">
+                <div class="gallery-card"
+                     data-img="exhibition1.jpeg"
+                     data-title="CBC Chennai Exhibition — Department Students"
+                     data-desc="Students of the Dept. of CS with Cyber Security participating in the CBC Chennai Digital India Exhibition, showcasing their projects and skills on a prominent stage."
+                     data-date="2023">
+                  <img src="exhibition1.jpeg" alt="CBC Chennai Exhibition" class="gc-photo" loading="lazy" />
+                  <span class="gc-badge">Exhibition</span>
+                  <div class="gc-eye"><svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg></div>
+                  <div class="gc-overlay">
+                    <span class="ov-tag">🏛️ Exhibition · CBC Chennai</span>
+                    <div class="ov-title">Students at Digital India Exhibition</div>
+                    <span class="ov-date">CBC Chennai · Digital India Initiative</span>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+          <div class="carousel-controls">
+            <div class="carousel-dots" id="dots-exhibition"></div>
+            <span class="carousel-counter" id="counter-exhibition">1 / 1</span>
+            <div class="carousel-nav">
+              <button class="carousel-btn" id="prev-exhibition" aria-label="Previous">&#8592;</button>
+              <button class="carousel-btn" id="next-exhibition" aria-label="Next">&#8594;</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ════════════════════════════════════════
+           8. EXTENSION ACTIVITIES — TREE PLANTING
+      ════════════════════════════════════════ -->
+      <div class="event-section reveal" data-category="extension" id="sec-extension">
+        <div class="event-section-header">
+          <div class="event-section-icon">🌱</div>
+          <div class="event-section-info">
+            <h3>Extension Activities — Tree Planting Drive</h3>
+            <p>20 March 2023 · Ottapparai, Melapalayam, Tamil Nadu</p>
+          </div>
+          <span class="event-count-badge">2 PHOTOS</span>
+        </div>
+        <div class="carousel-wrapper" id="car-extension">
+          <div class="carousel-track-outer">
+            <div class="carousel-track" id="track-extension">
+
+              <div class="carousel-slide">
+                <div class="gallery-card"
+                     data-img="extra1.jpeg"
+                     data-title="Extension Activity — Students Planting Saplings"
+                     data-desc="Students of the Dept. of CS with Cyber Security actively planting saplings in the field at Ottapparai, Melapalayam as part of the department's environmental extension activity."
+                     data-date="20 March 2023">
+                  <img src="extra1.jpeg" alt="Tree Planting Drive" class="gc-photo" loading="lazy" />
+                  <span class="gc-badge">Extension</span>
+                  <div class="gc-eye"><svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg></div>
+                  <div class="gc-overlay">
+                    <span class="ov-tag">🌱 Extension Activity · Mar 2023</span>
+                    <div class="ov-title">Students Planting Saplings</div>
+                    <span class="ov-date">20 Mar 2023 · Ottapparai, Tamil Nadu</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="carousel-slide">
+                <div class="gallery-card"
+                     data-img="extra2.jpeg"
+                     data-title="Extension Activity — Group Photo After Planting"
+                     data-desc="Students of the Dept. of CS with Cyber Security (Erode Arts and Science College, Self Finance Wing) posing together with saplings after completing the tree planting drive at Ottapparai."
+                     data-date="20 March 2023">
+                  <img src="extra2.jpeg" alt="Tree Planting Group Photo" class="gc-photo" loading="lazy" />
+                  <span class="gc-badge">Extension</span>
+                  <div class="gc-eye"><svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg></div>
+                  <div class="gc-overlay">
+                    <span class="ov-tag">🌱 Extension Activity · Mar 2023</span>
+                    <div class="ov-title">Group Photo After Planting Drive</div>
+                    <span class="ov-date">20 Mar 2023 · Ottapparai</span>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+          <div class="carousel-controls">
+            <div class="carousel-dots" id="dots-extension"></div>
+            <span class="carousel-counter" id="counter-extension">1 / 2</span>
+            <div class="carousel-nav">
+              <button class="carousel-btn" id="prev-extension" aria-label="Previous">&#8592;</button>
+              <button class="carousel-btn" id="next-extension" aria-label="Next">&#8594;</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ════════════════════════════════════════
+           9. ETHICAL HACKING
+      ════════════════════════════════════════ -->
+      <div class="event-section reveal" data-category="hacking" id="sec-hacking">
+        <div class="event-section-header">
+          <div class="event-section-icon">💻</div>
+          <div class="event-section-info">
+            <h3>Ethical Hacking Sessions</h3>
+            <p>09 April 2024 &amp; 04 September 2024 · CS with Cyber Security Association</p>
+          </div>
+          <span class="event-count-badge">3 PHOTOS</span>
+        </div>
+        <div class="carousel-wrapper" id="car-hacking">
+          <div class="carousel-track-outer">
+            <div class="carousel-track" id="track-hacking">
+
+              <div class="carousel-slide">
+                <div class="gallery-card"
+                     data-img="hacking_2.jpeg"
+                     data-title="Ethical Hacking — Association Inauguration"
+                     data-desc="CS with Cyber Security Association Inauguration & Development Programme at Erode Arts and Science College. Faculty, resource persons, and student representatives on stage marking the launch."
+                     data-date="09 April 2024">
+                  <img src="hacking_2.jpeg" alt="Hacking Association Inauguration" class="gc-photo" loading="lazy" />
+                  <span class="gc-badge">Ethical Hacking</span>
+                  <div class="gc-eye"><svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg></div>
+                  <div class="gc-overlay">
+                    <span class="ov-tag">💻 Ethical Hacking · Apr 2024</span>
+                    <div class="ov-title">CS Association Inauguration</div>
+                    <span class="ov-date">09 Apr 2024 · Erode Arts &amp; Science College</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="carousel-slide">
+                <div class="gallery-card"
+                     data-img="hacking_feedback1.jpeg"
+                     data-title="Ethical Hacking — Student Presentation"
+                     data-desc="A student delivering a technical presentation on ethical hacking tools and methodologies during the department's skill development programme."
+                     data-date="04 September 2024">
+                  <img src="hacking_feedback1.jpeg" alt="Hacking Student Presentation" class="gc-photo" loading="lazy" />
+                  <span class="gc-badge">Ethical Hacking</span>
+                  <div class="gc-eye"><svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg></div>
+                  <div class="gc-overlay">
+                    <span class="ov-tag">💻 Ethical Hacking · Sep 2024</span>
+                    <div class="ov-title">Student Technical Presentation</div>
+                    <span class="ov-date">04 Sep 2024</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="carousel-slide">
+                <div class="gallery-card"
+                     data-img="hacking_feedback2.jpeg"
+                     data-title="Ethical Hacking — Expert Session &amp; Live Demo"
+                     data-desc="An industry expert delivering a live demonstration of cybersecurity concepts including network scanning tools during the ethical hacking feedback session."
+                     data-date="04 September 2024">
+                  <img src="hacking_feedback2.jpeg" alt="Hacking Expert Session" class="gc-photo" loading="lazy" />
+                  <span class="gc-badge">Ethical Hacking</span>
+                  <div class="gc-eye"><svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg></div>
+                  <div class="gc-overlay">
+                    <span class="ov-tag">💻 Ethical Hacking · Sep 2024</span>
+                    <div class="ov-title">Expert Session &amp; Live Demo</div>
+                    <span class="ov-date">04 Sep 2024</span>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+          <div class="carousel-controls">
+            <div class="carousel-dots" id="dots-hacking"></div>
+            <span class="carousel-counter" id="counter-hacking">1 / 3</span>
+            <div class="carousel-nav">
+              <button class="carousel-btn" id="prev-hacking" aria-label="Previous">&#8592;</button>
+              <button class="carousel-btn" id="next-hacking" aria-label="Next">&#8594;</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ════════════════════════════════════════
+           10. FRESHERS DAY
+      ════════════════════════════════════════ -->
+      <div class="event-section reveal" data-category="freshers" id="sec-freshers">
+        <div class="event-section-header">
+          <div class="event-section-icon">🎉</div>
+          <div class="event-section-info">
+            <h3>Freshers Day 2024</h3>
+            <p>08 August 2024 · Erode Arts &amp; Science College (Autonomous)</p>
+          </div>
+          <span class="event-count-badge">8 PHOTOS</span>
+        </div>
+        <div class="carousel-wrapper" id="car-freshers">
+          <div class="carousel-track-outer">
+            <div class="carousel-track" id="track-freshers">
+
+              <div class="carousel-slide">
+                <div class="gallery-card"
+                     data-img="freshers4.jpeg"
+                     data-title="Freshers Day 2024 — Welcome Session Main Hall"
+                     data-desc="The grand freshers day welcome session held at Erode Arts & Science College with faculty and first-year students in the main auditorium."
+                     data-date="08 August 2024">
+                  <img src="freshers4.jpeg" alt="Freshers Day Hall" class="gc-photo" loading="lazy" />
+                  <span class="gc-badge">Freshers Day</span>
+                  <div class="gc-eye"><svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg></div>
+                  <div class="gc-overlay">
+                    <span class="ov-tag">🎉 Freshers Day · Aug 2024</span>
+                    <div class="ov-title">Welcome Session — Main Auditorium</div>
+                    <span class="ov-date">08 Aug 2024 · Erode Arts &amp; Science College</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="carousel-slide">
+                <div class="gallery-card"
+                     data-img="freshers4i.jpeg"
+                     data-title="Freshers Day — Prize Distribution"
+                     data-desc="Faculty and guests felicitating students on stage during the Freshers Day prize distribution ceremony at the college auditorium."
+                     data-date="08 August 2024">
+                  <img src="freshers4i.jpeg" alt="Freshers Prize Distribution" class="gc-photo" loading="lazy" />
+                  <span class="gc-badge">Freshers Day</span>
+                  <div class="gc-eye"><svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg></div>
+                  <div class="gc-overlay">
+                    <span class="ov-tag">🎉 Freshers Day · Aug 2024</span>
+                    <div class="ov-title">Prize Distribution Ceremony</div>
+                    <span class="ov-date">08 Aug 2024</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="carousel-slide">
+                <div class="gallery-card"
+                     data-img="freshers1.jpeg"
+                     data-title="Freshers Day — Memento Presentation"
+                     data-desc="Students receiving mementos from faculty during the Freshers Day 2024 event, celebrating the new academic year."
+                     data-date="08 August 2024">
+                  <img src="freshers1.jpeg" alt="Freshers Memento" class="gc-photo" loading="lazy" />
+                  <span class="gc-badge">Freshers Day</span>
+                  <div class="gc-eye"><svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg></div>
+                  <div class="gc-overlay">
+                    <span class="ov-tag">🎉 Freshers Day · Aug 2024</span>
+                    <div class="ov-title">Memento Presentation</div>
+                    <span class="ov-date">08 Aug 2024</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="carousel-slide">
+                <div class="gallery-card"
+                     data-img="freshers2ii.jpeg"
+                     data-title="Freshers Day — Faculty &amp; Student Felicitation"
+                     data-desc="Faculty felicitating a student on stage with other faculty members and guests witnessing the moment."
+                     data-date="08 August 2024">
+                  <img src="freshers2ii.jpeg" alt="Faculty Felicitation" class="gc-photo" loading="lazy" />
+                  <span class="gc-badge">Freshers Day</span>
+                  <div class="gc-eye"><svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg></div>
+                  <div class="gc-overlay">
+                    <span class="ov-tag">🎉 Freshers Day · Aug 2024</span>
+                    <div class="ov-title">Faculty &amp; Student Felicitation</div>
+                    <span class="ov-date">08 Aug 2024</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="carousel-slide">
+                <div class="gallery-card"
+                     data-img="freshers3.jpeg"
+                     data-title="Freshers Day — Class Group Photo"
+                     data-desc="First-year Cyber Security students posing with faculty members after the freshers day event."
+                     data-date="08 August 2024">
+                  <img src="freshers3.jpeg" alt="Freshers Group Photo" class="gc-photo" loading="lazy" />
+                  <span class="gc-badge">Freshers Day</span>
+                  <div class="gc-eye"><svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg></div>
+                  <div class="gc-overlay">
+                    <span class="ov-tag">🎉 Freshers Day · Aug 2024</span>
+                    <div class="ov-title">Class Group Photo</div>
+                    <span class="ov-date">08 Aug 2024</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="carousel-slide">
+                <div class="gallery-card"
+                     data-img="freshers5.jpeg"
+                     data-title="Freshers Day — Full Department Group Photo"
+                     data-desc="All first-year Cyber Security students with the full faculty team for the annual Freshers Day group photograph."
+                     data-date="08 August 2024">
+                  <img src="freshers5.jpeg" alt="Full Dept Group Photo" class="gc-photo" loading="lazy" />
+                  <span class="gc-badge">Freshers Day</span>
+                  <div class="gc-eye"><svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg></div>
+                  <div class="gc-overlay">
+                    <span class="ov-tag">🎉 Freshers Day · Aug 2024</span>
+                    <div class="ov-title">Full Department Group Photo</div>
+                    <span class="ov-date">08 Aug 2024 · Erode Arts &amp; Science College</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="carousel-slide">
+                <div class="gallery-card"
+                     data-img="freshers2iii.jpeg"
+                     data-title="Freshers Day — Student Batch Group Photo"
+                     data-desc="A batch of first-year students with faculty members during the Freshers Day 2024 celebration."
+                     data-date="08 August 2024">
+                  <img src="freshers2iii.jpeg" alt="Student Batch Photo" class="gc-photo" loading="lazy" />
+                  <span class="gc-badge">Freshers Day</span>
+                  <div class="gc-eye"><svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg></div>
+                  <div class="gc-overlay">
+                    <span class="ov-tag">🎉 Freshers Day · Aug 2024</span>
+                    <div class="ov-title">Student Batch Group Photo</div>
+                    <span class="ov-date">08 Aug 2024</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="carousel-slide">
+                <div class="gallery-card"
+                     data-img="freshers3ii.jpeg"
+                     data-title="Freshers Day — Combined Batch Group Photo"
+                     data-desc="Combined batch of Cyber Security students with faculty and staff representing the department during Freshers Day 2024."
+                     data-date="08 August 2024">
+                  <img src="freshers3ii.jpeg" alt="Combined Batch Group Photo" class="gc-photo" loading="lazy" />
+                  <span class="gc-badge">Freshers Day</span>
+                  <div class="gc-eye"><svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg></div>
+                  <div class="gc-overlay">
+                    <span class="ov-tag">🎉 Freshers Day · Aug 2024</span>
+                    <div class="ov-title">Combined Batch Group Photo</div>
+                    <span class="ov-date">08 Aug 2024</span>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+          <div class="carousel-controls">
+            <div class="carousel-dots" id="dots-freshers"></div>
+            <span class="carousel-counter" id="counter-freshers">1 / 8</span>
+            <div class="carousel-nav">
+              <button class="carousel-btn" id="prev-freshers" aria-label="Previous">&#8592;</button>
+              <button class="carousel-btn" id="next-freshers" aria-label="Next">&#8594;</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /container -->
+  </section>
+
+  <!-- ======= LIGHTBOX ======= -->
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Image Preview">
+    <div class="lightbox-inner">
+      <button class="lightbox-close" id="lightboxClose" aria-label="Close">✕</button>
+      <img src="" alt="" class="lightbox-photo" id="lightboxPhoto" />
+      <div class="lb-info">
+        <span class="lb-cat" id="lightboxCat"></span>
+        <h3 id="lightboxTitle"></h3>
+        <p id="lightboxDesc"></p>
+      </div>
+      <div class="lb-nav">
+        <button class="lb-nav-btn" id="lbPrev">&#8592;</button>
+        <span class="lb-slide-counter" id="lbCounter"></span>
+        <button class="lb-nav-btn" id="lbNext">&#8594;</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======= FOOTER ======= -->
+  <footer class="footer" role="contentinfo">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <div class="brand-icon" style="background:linear-gradient(135deg,rgba(255,255,255,0.15),rgba(0,188,212,0.2));border:1px solid rgba(255,255,255,0.15);">
+              <svg viewBox="0 0 24 24" style="width:22px;height:22px;fill:#00bcd4;"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>
+            </div>
+            <div>
+              <div style="font-family:var(--font-heading);font-weight:700;color:var(--white);font-size:1rem;letter-spacing:0.05em;text-transform:uppercase;">Cyber Security Dept.</div>
+              <div style="font-size:0.72rem;color:rgba(255,255,255,0.4);">Dept. of Computer Science</div>
+            </div>
+          </div>
+          <p>Providing world-class cyber security education and training to build the next generation of digital defenders.</p>
+        </div>
+        <div>
+          <h4>Quick Links</h4>
+          <div class="footer-links">
+            <a href="index.html">Home</a>
+            <a href="about.html">About Department</a>
+            <a href="objective.html">Objectives</a>
+            <a href="faculty.html">Faculty Members</a>
+            <a href="gallery.html">Gallery</a>
+            <a href="contact.html">Contact Us</a>
+          </div>
+        </div>
+        <div>
+          <h4>Contact Info</h4>
+          <div class="footer-links">
+            <a href="mailto:cybersecurity@college.edu">cybersecurity@college.edu</a>
+            <a href="tel:+918667316956">+91 8667316956</a>
+          </div>
+          <div style="margin-top:16px;font-size:0.85rem;color:rgba(255,255,255,0.5);line-height:1.8;">
+            Cyber Security Department<br>Erode Arts &amp; Science College<br>Rangampalayam, Erode — 638009
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <div>© 2026 <span>Cyber Security Department</span>. All Rights Reserved.</div>
+        <div>Built with &#x2764; for Digital Excellence</div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+  <script src="cyberbot.js"></script>
+  <script src="cyber-extras.js"></script>
+
+  <script>
+  /* ════════════════════════════════════════
+     CAROUSEL ENGINE
+  ════════════════════════════════════════ */
+  class Carousel {
+    constructor(id) {
+      this.id      = id;
+      this.track   = document.getElementById('track-' + id);
+      this.slides  = this.track ? Array.from(this.track.querySelectorAll('.carousel-slide')) : [];
+      this.total   = this.slides.length;
+      this.current = 0;
+      this.dotsEl  = document.getElementById('dots-' + id);
+      this.counterEl = document.getElementById('counter-' + id);
+      this.prevBtn = document.getElementById('prev-' + id);
+      this.nextBtn = document.getElementById('next-' + id);
+      if (!this.track || !this.total) return;
+      this._buildDots();
+      this._bind();
+      this._update();
+    }
+
+    _buildDots() {
+      if (!this.dotsEl) return;
+      this.dotsEl.innerHTML = '';
+      this.dots = [];
+      this.slides.forEach((_, i) => {
+        const d = document.createElement('button');
+        d.className = 'carousel-dot' + (i === 0 ? ' active' : '');
+        d.setAttribute('aria-label', 'Go to slide ' + (i + 1));
+        d.addEventListener('click', () => this.go(i));
+        this.dotsEl.appendChild(d);
+        this.dots.push(d);
+      });
+    }
+
+    _bind() {
+      if (this.prevBtn) this.prevBtn.addEventListener('click', () => this.prev());
+      if (this.nextBtn) this.nextBtn.addEventListener('click', () => this.next());
+      // Touch / swipe support
+      let startX = 0;
+      this.track.addEventListener('touchstart', e => { startX = e.touches[0].clientX; }, { passive: true });
+      this.track.addEventListener('touchend',   e => {
+        const diff = startX - e.changedTouches[0].clientX;
+        if (Math.abs(diff) > 40) diff > 0 ? this.next() : this.prev();
+      }, { passive: true });
+    }
+
+    go(index) {
+      this.current = Math.max(0, Math.min(index, this.total - 1));
+      this._update();
+    }
+
+    prev() { this.go(this.current - 1); }
+    next() { this.go(this.current + 1); }
+
+    _update() {
+      this.track.style.transform = `translateX(-${this.current * 100}%)`;
+      if (this.counterEl) this.counterEl.textContent = (this.current + 1) + ' / ' + this.total;
+      if (this.dots) this.dots.forEach((d, i) => d.classList.toggle('active', i === this.current));
+      if (this.prevBtn) this.prevBtn.disabled = this.current === 0;
+      if (this.nextBtn) this.nextBtn.disabled = this.current === this.total - 1;
+    }
+  }
+
+  /* Init all carousels */
+  const carouselIds = ['teachers','pongal','parents','cybercrime','digilocker','drug','exhibition','extension','hacking','freshers'];
+  const carousels   = {};
+  carouselIds.forEach(id => { carousels[id] = new Carousel(id); });
+
+  /* ════════════════════════════════════════
+     FILTER BUTTONS
+  ════════════════════════════════════════ */
+  const filterBtns = document.querySelectorAll('.filter-btn');
+  const eventSections = document.querySelectorAll('.event-section');
+
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', function () {
+      filterBtns.forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+      const filter = this.dataset.filter;
+      eventSections.forEach(sec => {
+        const cat = sec.dataset.category;
+        const show = filter === 'all' || cat === filter;
+        sec.dataset.hidden = show ? 'false' : 'true';
+        sec.style.display  = show ? '' : 'none';
+        if (show) {
+          sec.style.animation = 'fadeInUp 0.4s ease both';
+        }
+      });
+    });
+  });
+
+  /* ════════════════════════════════════════
+     LIGHTBOX
+  ════════════════════════════════════════ */
+  const lightbox   = document.getElementById('lightbox');
+  const lbPhoto    = document.getElementById('lightboxPhoto');
+  const lbTitle    = document.getElementById('lightboxTitle');
+  const lbDesc     = document.getElementById('lightboxDesc');
+  const lbCat      = document.getElementById('lightboxCat');
+  const lbClose    = document.getElementById('lightboxClose');
+  const lbPrev     = document.getElementById('lbPrev');
+  const lbNext     = document.getElementById('lbNext');
+  const lbCounter  = document.getElementById('lbCounter');
+
+  let lbImages = [];
+  let lbIndex  = 0;
+
+  // Collect all gallery cards within each section for lb navigation
+  function openLightbox(card, sectionCards) {
+    lbImages = sectionCards;
+    lbIndex  = sectionCards.indexOf(card);
+    renderLb();
+    lightbox.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function renderLb() {
+    const card = lbImages[lbIndex];
+    lbPhoto.src        = card.dataset.img   || '';
+    lbPhoto.alt        = card.dataset.title || '';
+    lbTitle.textContent = card.dataset.title || '';
+    lbDesc.textContent  = card.dataset.desc  || '';
+    lbCat.textContent   = (card.dataset.date ? '📅 ' + card.dataset.date + '  ·  ' : '') + (card.dataset.category || '');
+    lbCounter.textContent = (lbIndex + 1) + ' / ' + lbImages.length;
+    lbPrev.disabled = lbIndex === 0;
+    lbNext.disabled = lbIndex === lbImages.length - 1;
+  }
+
+  function closeLb() {
+    lightbox.classList.remove('open');
+    document.body.style.overflow = '';
+    lbPhoto.src = '';
+  }
+
+  lbClose.addEventListener('click', closeLb);
+  lightbox.addEventListener('click', e => { if (e.target === lightbox) closeLb(); });
+  lbPrev.addEventListener('click', () => { if (lbIndex > 0) { lbIndex--; renderLb(); } });
+  lbNext.addEventListener('click', () => { if (lbIndex < lbImages.length - 1) { lbIndex++; renderLb(); } });
+  document.addEventListener('keydown', e => {
+    if (!lightbox.classList.contains('open')) return;
+    if (e.key === 'Escape') closeLb();
+    if (e.key === 'ArrowLeft'  && lbIndex > 0)              { lbIndex--; renderLb(); }
+    if (e.key === 'ArrowRight' && lbIndex < lbImages.length - 1) { lbIndex++; renderLb(); }
+  });
+
+  // Attach click handlers to all gallery cards
+  document.querySelectorAll('.event-section').forEach(sec => {
+    const cards = Array.from(sec.querySelectorAll('.gallery-card'));
+    cards.forEach(card => {
+      card.addEventListener('click', () => openLightbox(card, cards));
+    });
+  });
+  </script>
+</body>
+</html>
